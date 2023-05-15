@@ -12,7 +12,6 @@ import java.io.IOException;
 public class EncodingFilter implements Filter {
     private  FilterConfig filterConfig = null;
     public void init(FilterConfig config) throws ServletException {
-
         this.filterConfig = config;
     }
 
