@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="app">
+<!--    搜索表单-->
+
+
+<!--        搜索表单-->
+        <el-form :inline="true" :model="person" class="demo-form-inline">
+            <el-form-item label="员工姓名">
+                <el-input v-model="person.personName" placeholder="员工姓名"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">查询</el-button>
+            </el-form-item>
+        </el-form>
+<!--    表格-->
+        <template>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+<!--                <el-table-column-->
+<!--                        type="selection"-->
+<!--                        width="55">-->
+<!--                </el-table-column>-->
+                <el-table-column
+                        type="index"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        prop="personName"
+                        label="姓名"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="gender"
+                        label="性别"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="education"
+                        label="文化水平"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="marriage"
+                        label="婚姻状况"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="title"
+                        label="职称"
+                        align="center">
+                </el-table-column>
+                <el-table-column
+                        prop="wages"
+                        label="工资"
+                        align="center">
+                </el-table-column>
+            </el-table>
+        </template>
+
+        <!--分页工具条-->
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="5"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="totalCount">
+        </el-pagination>
+    </div>
+
+    <script src="js/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+
+        mounted(){
+            this.selectByPage();
+          // 页面加载完成后，发送异步请求，获取数据
+          //   let _this = this;
+          //   axios({
+          //       method: "get",
+          //       url: "http://localhost:8080/brand-case/person/selectAll"
+          //   }).then(function (resp){
+          //       _this.tableData = resp.data;
+          //   })
+        },
+
+        methods:{
+
+            // 分页条件查询
+            selectByPageAndCondition(){
+                let _this = this;
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/brand-case/person/selectByPageAndCondition?currentPage="+this.currentPage+"&pageSize="+this.pageSize,
+                    data:this.person
+                }).then(function (resp) {
+                    //设置表格数据
+                    _this.tableData = resp.data.rows; // {rows:[],totalCount:100}
+                    //设置总记录数
+                    _this.totalCount = resp.data.totalCount;
+                })
+            },
+            // 查询分页数据
+            selectByPage() {
+                let _this = this;
+                // 发送ajax异步请求
+                axios({
+                    method:"get",
+                    url:"http://localhost:8080/brand-case/person/selectByPage?currentPage="+_this.currentPage+"&pageSize="+_this.pageSize,
+                }).then(function (resp) {
+                    //设置表格数据
+                    _this.tableData = resp.data.rows; // {rows:[],totalCount:100}
+                    //设置总记录数
+                    _this.totalCount = resp.data.totalCount;
+                })
+            },
+
+            // 搜索表单提交方法
+            onSubmit() {
+                console.log(this.person);
+                this.selectByPageAndCondition();
+            },
+            // 分页
+            handleSizeChange(val) {
+                // console.log(`每页 ${val} 条`);
+                // 重新设置每页显示条数
+                this.pageSize = val;
+                this.selectByPage();
+            },
+            handleCurrentChange(val) {
+                // console.log(`当前页: ${val}`);
+                // 重新设置当前页码
+                this.currentPage = val;
+                this.selectByPage();
+            }
+        },
+        data(){
+            return {
+                // 总查询数
+                totalCount: 1,
+                // 当前页码
+                currentPage: 1,
+                // 每页显示条数
+                pageSize: 5,
+                // 搜索表单数据
+                person: {
+                    id: '',
+                    personName: '',
+                    gender: '',
+                    education: '',
+                    marriage: '',
+                    title: '',
+                    wages: 4000
+                },
+
+                // 表格数据
+                tableData: [{
+                    personName: '刘备',
+                    gender: '男',
+                    education: '小学毕业',
+                    marriage: '已婚',
+                    title: '人事员工',
+                    wages: 4000
+                }, {
+                    personName: '刘备',
+                    gender: '男',
+                    education: '小学毕业',
+                    marriage: '已婚',
+                    title: '人事员工',
+                    wages: 4000
+                }, {
+                    personName: '刘备',
+                    gender: '男',
+                    education: '小学毕业',
+                    marriage: '已婚',
+                    title: '人事员工',
+                    wages: 4000
+                }, {
+                    personName: '刘备',
+                    gender: '男',
+                    education: '小学毕业',
+                    marriage: '已婚',
+                    title: '人事员工',
+                    wages: 4000
+                }]
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

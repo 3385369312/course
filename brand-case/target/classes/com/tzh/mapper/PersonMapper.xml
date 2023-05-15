@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tzh.mapper.PersonMapper">
+
+    <resultMap id="personResultMap" type="person">
+        <result property="personName" column="personName" />
+    </resultMap>
+
+    <delete id="deleteByIds">
+        -- delete from information where id in(?,?,?) ,通配符
+        delete from information where id in
+        -- 这里要形成(?,?,?) 的形式, 其中?处用id替代
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    普通员工条件查询-->
+    <!-- where personName = #{person.personName}-->
+    <select id="selectByPageAndCondition" resultMap="personResultMap">
+        select top (#{size}) *
+        from information
+        <where>
+            id not in (select top (#{begin}) id from information)
+            <if test="person.personName != null and person.personName != '' ">
+                and personName like (#{person.personName})
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectTotalCountByCondition"  resultType="java.lang.Integer">
+        select count(*)
+        from information
+        <where>
+            <if test="person.personName != null and person.personName != '' ">
+                and personName like (#{person.personName})
+            </if>
+        </where>
+    </select>
+
+
+
+    <!--    管理员组合条件查询-->
+    <!-- where personName = #{person.personName}-->
+    <select id="selectByPageAndCondition2" resultMap="personResultMap">
+        select top (#{size}) *
+        from information
+        <where>
+            id not in (select top (#{begin}) id from information)
+            <if test="person.personName != null and person.personName != '' ">
+                and personName like (#{person.personName})
+            </if>
+            <if test="person.education != null and person.education != '' ">
+                and education like (#{person.education})
+            </if>
+            <if test="person.title != null and person.title != '' ">
+                and title like (#{person.title})
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTotalCountByCondition2"  resultType="java.lang.Integer">
+        select count(*)
+        from information
+        <where>
+            <if test="person.personName != null and person.personName != '' ">
+                and personName like (#{person.personName})
+            </if>
+            <if test="person.education != null and person.education != '' ">
+                and education like (#{person.education})
+            </if>
+            <if test="person.title != null and person.title != '' ">
+                and title like (#{person.title})
+            </if>
+        </where>
+    </select>
+</mapper>
