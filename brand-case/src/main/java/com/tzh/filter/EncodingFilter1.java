@@ -1,7 +1,8 @@
 package com.tzh.filter;
 
 import javax.servlet.*;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -9,10 +10,9 @@ import java.io.IOException;
 @WebFilter(filterName = "EncodingFilter",urlPatterns = "/*",
         initParams = {@WebInitParam(name="encoding",value="utf-8"),
                 @WebInitParam(name = "textType",value = "text/html;charset=utf-8")})
-public class EncodingFilter implements Filter {
+public class EncodingFilter1 implements Filter {
     private  FilterConfig filterConfig = null;
     public void init(FilterConfig config) throws ServletException {
-
         this.filterConfig = config;
     }
 
